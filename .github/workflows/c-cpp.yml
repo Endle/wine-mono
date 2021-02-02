@@ -16,10 +16,14 @@ jobs:
     - uses: actions/checkout@v2
     - name: set up
       run: |
+        sudo apt-get update && sudo apt-get install wget -y
+        wget -nc https://dl.winehq.org/wine-builds/winehq.key
+        sudo apt-key add winehq.key
+        sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' 
         sudo apt-get update
         # && sudo apt-get upgrade -y 
         # sudo apt-get build-dep mono-runtime
-        sudo apt-get install wine -y
+        sudo apt-get install winehq-stable -y
     - name: make msi
       run: make msi
     - name: make targz
