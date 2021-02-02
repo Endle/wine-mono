@@ -16,6 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: set up
       run: |
+        sudo dpkg --add-architecture i386
         sudo apt-get update && sudo apt-get install wget -y
         wget -nc https://dl.winehq.org/wine-builds/winehq.key
         sudo apt-key add winehq.key
