@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name : Ignore packages require EULA
       run: sudo apt-mark hold msodbcsql17
-    - name: set up
+    - name: Install Wine
       run: |
         sudo dpkg --add-architecture i386
         #wget -nc https://dl.winehq.org/wine-builds/winehq.key
@@ -27,6 +27,8 @@ jobs:
         sudo apt-get install wine-stable -y
         # sudo apt-get build-dep mono-runtime
         # sudo apt-get install winehq-stable -y
+    - name: Install Make Tools
+      run: sudo apt-get install cmake -y
     - name: make msi
       run: make msi
     - name: make targz
