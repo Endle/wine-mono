@@ -19,16 +19,13 @@ jobs:
     - name: Install Wine
       run: |
         sudo dpkg --add-architecture i386
-        #wget -nc https://dl.winehq.org/wine-builds/winehq.key
-        #sudo apt-key add winehq.key
-        #sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' 
         sudo apt-get update
         sudo apt-get upgrade -y 
         sudo apt-get install wine-stable -y
-        # sudo apt-get build-dep mono-runtime
-        # sudo apt-get install winehq-stable -y
     - name: Install Make Tools
       run: sudo apt-get install cmake -y
+    - name: Clone submodules
+      run: git submodule submodule update --init --recursive --depth=1
     - name: make msi
       run: make msi
     - name: make targz
