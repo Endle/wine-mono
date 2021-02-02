@@ -1,0 +1,21 @@
+name: Wine-Mono CI
+
+on:
+  push:
+    branches: [ develop, ci ]
+  pull_request:
+    branches: [ develop, ci ]
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: make msi
+      run: make msi
+    - name: make targz
+      run: make targz
+
