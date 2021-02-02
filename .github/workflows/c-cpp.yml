@@ -15,7 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: set up
-      run: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install wine -y
+      run: |
+        sudo apt-get update && sudo apt-get upgrade -y 
+        sudo apt-get build-dep mono-runtime
+        sudo apt-get install wine -y
     - name: make msi
       run: make msi
     - name: make targz
