@@ -10,7 +10,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
         #sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' 
         sudo apt-get update
         sudo apt-get upgrade -y 
-        sudo apt-get install wine -y
+        sudo apt-get install wine-stable -y
         # sudo apt-get build-dep mono-runtime
         # sudo apt-get install winehq-stable -y
     - name: make msi
