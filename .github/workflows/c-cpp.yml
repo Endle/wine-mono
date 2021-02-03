@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Ignore packages require EULA
-      run: sudo apt remove msodbcsql17 -y
+      run: sudo apt remove msodbcsql17 linux-azure linux-cloud-tools-azure linux-headers-azure linux-image-azure linux-tools-azure -y
       #run: sudo apt-mark hold msodbcsql17
     - name: Install gnupg
       run: |
