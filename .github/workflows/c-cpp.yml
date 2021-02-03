@@ -21,6 +21,8 @@ jobs:
         sudo apt-get update
         sudo apt-get upgrade -y 
         sudo apt install gnupg ca-certificates -y
+    - name: Fix Yarn Key (https://github.com/yarnpkg/yarn/issues/7866)
+      run:  sudo apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com
     - name: Install Wine
       run: |
         sudo dpkg --add-architecture i386
