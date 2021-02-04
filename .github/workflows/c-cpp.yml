@@ -53,6 +53,7 @@ jobs:
         mono --version
         ld --version
         cmake --version
+        man libtool | tail -1
     - name: make msi
       run: make msi
     - name: make targz
