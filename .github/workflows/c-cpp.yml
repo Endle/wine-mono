@@ -57,7 +57,7 @@ jobs:
     - name: make targz
       run: make targz
     - name: Install
-      run: wine64 msiexec /i winemono.msi
+      run: wine msiexec /i winemono.msi
     - name: Test
       run: make test
         
