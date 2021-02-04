@@ -48,6 +48,7 @@ jobs:
       run: |
         gcc --version
         g++ --version
+        i686-w64-mingw32-gcc --version
         wine --version
         mono --version
         ld --version
