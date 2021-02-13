@@ -16,7 +16,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
           submodules: recursive
-
+    - name: Vag
+      run: vagrant up
     - name: Remove packages require EULA
       run: sudo apt remove msodbcsql17 linux-azure linux-cloud-tools-azure linux-headers-azure linux-image-azure linux-tools-azure -y
     - name: Install gnupg
