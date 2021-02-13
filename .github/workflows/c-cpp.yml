@@ -19,21 +19,10 @@ jobs:
 
     - name: Remove packages require EULA
       run: sudo apt remove msodbcsql17 linux-azure linux-cloud-tools-azure linux-headers-azure linux-image-azure linux-tools-azure -y
-    - name: Install gnupg
-      run: |
-        sudo apt-get update
-        sudo apt-get upgrade -y 
-        sudo apt install gnupg ca-certificates -y
-    - name: Fix Yarn Key (https://github.com/yarnpkg/yarn/issues/7866)
-      run:  |
-        curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-        sudo apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com
     - name: Install Wine
       run: |   
         sudo apt-get update
-        sudo apt-get upgrade -y 
         sudo apt install --install-recommends wine64 wine64-tools -y
-        sudo apt install --install-recommends wine32 -y
     - name: Install Mono Build Dependencies
       run: |
         sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
@@ -45,7 +34,6 @@ jobs:
       run: |
         gcc --version
         g++ --version
-        # i686-w64-mingw32-gcc --version
         wine --version
         mono --version
         ld --version
@@ -53,10 +41,6 @@ jobs:
         man libtool | tail -1
     - name: make msi
       run: make msi
-    - name: make targz
-      run: make targz
-    - name: Install
-      run: wine64 msiexec /i winemono.msi
     - name: Test
       run: make test
         
