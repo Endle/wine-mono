@@ -48,7 +48,7 @@ Or, to have vagrant watch for changes:
 $ vagrant rsync-auto
 
 Steps break down
-make mscorlib.dll
+make build/mono-unix/.built
 
 INSTALL
 
