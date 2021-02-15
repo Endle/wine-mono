@@ -47,6 +47,15 @@ Or, to have vagrant watch for changes:
 
 $ vagrant rsync-auto
 
+Steps break down
+make -f mono.make mscorlib.dll
+cd mono; NOCONFIGURE=yes ./autogen.sh
+touch .//build/.dir
+/bin/sh: line 0: cd: .//build: No such file or directory
+mkdir -p build/mono-unix
+cd build/mono-unix && /home/lizhenbo/src/wine_n_extras/wine-mono/mono/configure --prefix="/home/lizhenbo/src/wine_n_extras/wine-mono/mono-unix-install" --with-mcs-docs=no --disable-system-aot --without-compiler-server
+
+
 
 INSTALL
 
