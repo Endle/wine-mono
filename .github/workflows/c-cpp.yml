@@ -22,7 +22,6 @@ jobs:
     - name: Install gnupg
       run: |
         sudo apt-get update
-        sudo apt-get upgrade -y 
         sudo apt install gnupg ca-certificates -y
     - name: Fix Yarn Key (https://github.com/yarnpkg/yarn/issues/7866)
       run:  |
