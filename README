@@ -48,7 +48,9 @@ Or, to have vagrant watch for changes:
 $ vagrant rsync-auto
 
 Steps break down
+mkdir -p build/mono-unix
 make build/mono-unix/.built
+make build/mono-unix/.built-win32 -j6
 
 INSTALL
 
