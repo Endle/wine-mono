@@ -45,5 +45,5 @@ jobs:
         ./autogen.sh
         make -j2
     - name: make mono check
-      run: make check -j$(nproc)
+      run: cd mono && make check -j$(nproc)
 
