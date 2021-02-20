@@ -40,7 +40,7 @@ jobs:
         cmake --version 1>&2
         man libtool | tail -1 1>&2
     - name: make msi
-      run: (make msi -j2 &> msi-output.log && touch msi-succeeded) || true
+      run: (make msi -j$(nproc) &> msi-output.log && touch msi-succeeded) || true
     - name: make msi logging capture
       uses: actions/upload-artifact@v2
       with:
@@ -48,20 +48,16 @@ jobs:
         path: msi-output.log
     - name: check make msi result
       run: test -f msi-succeeded
-    - name: make msi output capture
+    - name: capture make msi output
       uses: actions/upload-artifact@v2
       with:
         name: make msi output
         path: wine-mono-*.msi
     - name: make test pack 
-      run: make make tests-zip  -j2
-    - name: upload test zip
+      run: make tests-zip -j$(nproc)
+    - name: capture test zip
       uses: actions/upload-artifact@v2
       with:
         name: tests-zip
         path: wine-mono-*-tests.zip
-    - name: upload test exe
-      uses: actions/upload-artifact@v2
-      with:
-        name: tests-exe
-        path: build/run-tests.exe
+
