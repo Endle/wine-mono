@@ -110,8 +110,8 @@ jobs:
         unzip wine-mono-*-tests.zip
         cd tests
         wine run-tests.exe -skip-list:skip-always.txt -pass-list:wine-passing.txt -fail-list:wine-failing.txt >>mono_tests-output.log 2>&1
-    - name: capture mono test
-      uses: actions/upload  -artifact@v2
+    - name: capture mono test result
+      uses: actions/upload-artifact@v2
       with:
           name: mono-test-output
           path: mono_tests-output.log
@@ -127,4 +127,4 @@ jobs:
     - name: Run Mono tests
       run: |
         unzip wine-mono-*-tests.zip
-        tests/run-on-windows.bat
+        cd tests && ./run-tests -skip-list:skip-always.txt -pass-list:windows-passing.txt -fail-list:windows-failing.txt
