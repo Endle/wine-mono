@@ -109,7 +109,12 @@ jobs:
       run: |
         unzip wine-mono-*-tests.zip
         cd tests
-        wine run-tests.exe -skip-list:skip-always.txt -pass-list:wine-passing.txt -fail-list:wine-failing.txt 1>&2
+        wine run-tests.exe -skip-list:skip-always.txt -pass-list:wine-passing.txt -fail-list:wine-failing.txt >>mono_tests-output.log 2>&1
+    - name: capture mono test
+      uses: actions/upload  -artifact@v2
+      with:
+          name: mono-test-output
+          path: mono_tests-output.log
         
   win-test:
     runs-on: windows-2019
@@ -122,5 +127,4 @@ jobs:
     - name: Run Mono tests
       run: |
         unzip wine-mono-*-tests.zip
-        cd tests
-        run-on-windows.bat
+        tests/run-on-windows.bat
