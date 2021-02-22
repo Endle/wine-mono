@@ -110,11 +110,12 @@ jobs:
         unzip wine-mono-*-tests.zip
         cd tests
         wine run-tests.exe -skip-list:skip-always.txt -pass-list:wine-passing.txt -fail-list:wine-failing.txt >> ../mono_tests-wine-output.log 2>&1 || printf '::warning mono: test failed\n'
-    - name: capture mono test result
+    - name: linux test output capture
       uses: actions/upload-artifact@v2
       with:
-          name: mono_tests-wine-output
-          path: mono_tests-wine-output.log
+        name: linux test output
+        path: ./*.log   
+
         
   win-test:
     runs-on: windows-2019
@@ -129,11 +130,11 @@ jobs:
         unzip wine-mono-*-tests.zip
         cd tests
         ./run-tests -skip-list:skip-always.txt -pass-list:windows-passing.txt -fail-list:windows-failing.txt  >> ../mono_tests-windows-output.log 2>&1  || printf '::warning mono: test failed\n'
-    - name: linux test output capture
+    - name: capture win test result
       uses: actions/upload-artifact@v2
       with:
-        name: linux test output
-        path: ./*.log
+          name: mono_tests-windows-output
+          path: mono_tests-windows-output.log
 
   mac-test:
     runs-on: macos-latest
