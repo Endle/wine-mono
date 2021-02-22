@@ -45,5 +45,11 @@ jobs:
         ./autogen.sh
         make -j2
     - name: make mono check
-      run: cd mono && make check -j$(nproc)
+      run: |
+        make check -j$(nproc) >>mono-output.log 2>&1 || printf '::warning mscoree:%s test failed\n'
+    - name: upload mono direct
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux test output
+        path: mono-output.log
 
