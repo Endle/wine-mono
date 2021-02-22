@@ -129,11 +129,11 @@ jobs:
         unzip wine-mono-*-tests.zip
         cd tests
         ./run-tests -skip-list:skip-always.txt -pass-list:windows-passing.txt -fail-list:windows-failing.txt  >> ../mono_tests-windows-output.log 2>&1  || printf '::warning mono: test failed\n'
-    - name: capture win mono test result
+    - name: linux test output capture
       uses: actions/upload-artifact@v2
       with:
-          name: mono_tests-windows-output
-          path: mono_tests-windows-output.log
+        name: linux test output
+        path: ./*.log
 
   mac-test:
     runs-on: macos-latest
@@ -160,3 +160,4 @@ jobs:
           wine64 winetest64/mscoree_test.exe $testname >>winetest64-output.log 2>&1 || printf '::warning mscoree:%s test failed\n' $testname
           echo END $testname TEST >>winetest64-output.log
         done
+
