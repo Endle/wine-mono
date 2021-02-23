@@ -107,7 +107,7 @@ jobs:
         name: tests-zip
     - name: Run Mono tests
       run: |
-        unzip wine-mono-*-tests.zip -q
+        unzip -q wine-mono-*-tests.zip
         cd tests
         wine run-tests.exe -skip-list:skip-always.txt -pass-list:wine-passing.txt -fail-list:wine-failing.txt >> ../mono_tests-wine-output.log 2>&1 || printf '::warning wine mono: test failed\n'
     - name: linux test output capture
@@ -127,7 +127,7 @@ jobs:
         name: tests-zip
     - name: Run Mono tests
       run: |
-        unzip wine-mono-*-tests.zip -q
+        unzip -q wine-mono-*-tests.zip
         cd tests
         ./run-tests -skip-list:skip-always.txt -pass-list:windows-passing.txt -fail-list:windows-failing.txt  >> ../mono_tests-windows-output.log 2>&1  || printf '::warning windows mono: test failed\n'
     - name: capture win test result
@@ -167,7 +167,7 @@ jobs:
         name: tests-zip
     - name: Run Mono tests
       run: |
-        unzip wine-mono-*-tests.zip -q
+        unzip -q wine-mono-*-tests.zip
         cd tests
         wine run-tests.exe -skip-list:skip-always.txt -pass-list:wine-passing.txt -fail-list:wine-failing.txt >> ../mono_tests-wine-mac-output.log 2>&1 || printf '::warning wine-mac mono: test failed\n'
     - name: mac test output capture
