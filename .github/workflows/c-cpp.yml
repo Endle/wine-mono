@@ -129,7 +129,7 @@ jobs:
       run: |
         unzip -q wine-mono-*-tests.zip
         cd tests
-        ./run-tests -skip-list:skip-always.txt -pass-list:windows-passing.txt -fail-list:windows-failing.txt  >> ../mono_tests-windows-output.log 2>&1  || printf '::warning windows mono: test failed\n'
+        ./run-tests -skip-list:skip-always.txt -pass-list:windows-passing.txt -fail-list:windows-failing.txt 
     - name: capture win test result
       uses: actions/upload-artifact@v2
       with:
@@ -169,7 +169,7 @@ jobs:
       run: |
         unzip -q wine-mono-*-tests.zip
         cd tests
-        wine run-tests.exe -skip-list:skip-always.txt -pass-list:wine-passing.txt -fail-list:wine-failing.txt >> ../mono_tests-wine-mac-output.log 2>&1 || printf '::warning wine-mac mono: test failed\n'
+        wine64 run-tests.exe -skip-list:skip-always.txt -pass-list:wine-passing.txt -fail-list:wine-failing.txt >> ../mono_tests-wine-mac-output.log 2>&1 || printf '::warning wine-mac mono: test failed\n'
     - name: mac test output capture
       uses: actions/upload-artifact@v2
       with:
