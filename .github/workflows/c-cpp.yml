@@ -136,3 +136,22 @@ jobs:
           echo END $testname TEST >>winetest64-output.log
         done
 
+  win-test:
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+      with:
+          submodules: recursive
+    - name: Build native Mono
+      shell: bash
+      run: |
+        cd mono
+        export PREFIX=$(pwd)/build_mono
+        ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --enable-msvc --disable-boehm
+        make -j$(nproc)
+        make install
+    - name: Mono test
+      shell: bash
+      run: make check -j$(nproc)
+
+
