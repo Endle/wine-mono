@@ -145,11 +145,14 @@ jobs:
     - uses: actions/checkout@v2
       with:
           submodules: recursive
+    - run: git config --global core.autocrlf input
     - name: Set up Cygwin
       uses: egor-tensin/setup-cygwin@v3
       with:
         platform: x64
         packages: autoconf automake bison gcc-core gcc-g++ mingw64-i686-runtime mingw64-i686-binutils mingw64-i686-gcc-core mingw64-i686-gcc-g++ mingw64-i686-pthreads mingw64-i686-w32api mingw64-x86_64-runtime mingw64-x86_64-binutils mingw64-x86_64-gcc-core mingw64-x86_64-gcc-g++ mingw64-x86_64-pthreads mingw64-x86_64-w32api libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt bc patch cmake perl yasm unzip
+    - run: git config --global core.autocrlf input
+      shell: bash
     - name: Build native Mono
       shell: bash
       run: |
@@ -178,6 +181,8 @@ jobs:
       with:
         platform: x64
         packages: autoconf automake bison gcc-core gcc-g++ mingw64-i686-runtime mingw64-i686-binutils mingw64-i686-gcc-core mingw64-i686-gcc-g++ mingw64-i686-pthreads mingw64-i686-w32api mingw64-x86_64-runtime mingw64-x86_64-binutils mingw64-x86_64-gcc-core mingw64-x86_64-gcc-g++ mingw64-x86_64-pthreads mingw64-x86_64-w32api libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt bc patch cmake perl yasm unzip
+    - run: git config --global core.autocrlf input
+      shell: bash
     - name: Build native Mono
       shell: bash
       run: |
