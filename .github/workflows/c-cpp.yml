@@ -181,6 +181,7 @@ jobs:
       run: |
         rm -rf mono
         git clone --depth=1 --recursive https://github.com/mono/mono.git
+        ls
     - name: Build native Mono
       shell: bash
       run: |
