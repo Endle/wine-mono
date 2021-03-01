@@ -118,6 +118,14 @@ jobs:
       with:
         name: linux test output
         path: ./*.log
+    - name: Run tests
+      run: |
+        cd tests
+        for test in `ls tests-x86`
+        do
+          name=$(basename $test .exe)
+          time wine run-tests.exe -run:$name
+        done
 
   mac-test:
     runs-on: macos-latest
@@ -148,11 +156,19 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: make tests-zip output
-    - name: Run Mono tests
+    - name: Prepare tests
       run: |
         unzip -q wine-mono-*-tests.zip
         cd tests
-        wine64 run-tests.exe -skip-list:skip-always.txt -pass-list:wine-passing.txt -fail-list:wine-failing.txt >> ../mono_tests-wine-mac-output.log 2>&1 || printf '::warning wine-mac mono: test failed\n'
+        #wine64 run-tests.exe -skip-list:skip-always.txt -pass-list:wine-passing.txt -fail-list:wine-failing.txt >> ../mono_tests-wine-mac-output.log 2>&1 || printf '::warning wine-mac mono: test failed\n'
+    - name: Run tests
+      run: |
+        cd tests
+        for test in `ls tests-x86`
+        do
+          name=$(basename $test .exe)
+          time wine run-tests.exe -run:$name
+        done
     - name: mac test output capture
       uses: actions/upload-artifact@v2
       with:
