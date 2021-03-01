@@ -8,11 +8,68 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  win-build-upstream-mono:
+    runs-on: windows-2019
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: autoconf automake bison libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt 
+            bc patch cmake perl yasm unzip
+            mingw-w64-i686-binutils mingw-w64-i686-gcc mingw-w64-x86_64-binutils mingw-w64-x86_64-gcc mingw-w64-cross-gcc
+      - name: Download upstream mono
+        run: git clone --depth=1 --recursive https://github.com/mono/mono.git
+      - name: Build native Mono
+        run: |
+          cd mono
+          export PREFIX=$(pwd)/build_mono
+          ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --disable-boehm
+          make get-monolite-latest
+          make -j$(nproc)
+          make install
+      - name: Mono test
+        run: cd mono && make check -j$(nproc)
+        
+  win-build-forked-mono:
+    runs-on: windows-2019
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: autoconf automake bison libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt 
+            bc patch cmake perl yasm unzip
+            mingw-w64-i686-binutils mingw-w64-i686-gcc mingw-w64-x86_64-binutils mingw-w64-x86_64-gcc mingw-w64-cross-gcc mingw-w64-x86_64-mono
+      - name: Init Wine-mino submodules
+        run: cd mono && git submodule update --init --recursive
+      - name: Build native Mono
+        run: |
+          cd mono
+          export PREFIX=$(pwd)/build_mono
+          ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --disable-boehm --enable-static --enable-shared
+          make -j$(nproc)
+          make install
+      - name: Mono test
+        run: cd mono && make check -j$(nproc)
+
+      
   build:
 
     runs-on: ubuntu-20.04
 
     steps:
+    - name: fail
+      run: exit 1
     - uses: actions/checkout@v2
       with:
           submodules: recursive
@@ -125,4 +182,6 @@ jobs:
           wine64 winetest64/mscoree_test.exe $testname 1>&2 || printf '::warning mscoree:%s test failed\n' $testname
           echo END $testname TEST 1>&2
         done
+
+
 
