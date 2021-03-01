@@ -17,15 +17,16 @@ jobs:
         uses: egor-tensin/setup-cygwin@v3
         with:
           platform: x64
-          packages: autoconf automake bison libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt 
-            bc patch cmake perl yasm unzip
-            mingw-w64-i686-binutils mingw-w64-i686-gcc mingw-w64-x86_64-binutils mingw-w64-x86_64-gcc mingw-w64-cross-gcc
-      - name: Download upstream mono
-        run: git clone --depth=1 --recursive https://github.com/mono/mono.git
+          packages: git
       - name: check env
         run: |
           ls
           pwd
+          
+          
+      - name: Download upstream mono
+        run: git clone --depth=1 --recursive https://github.com/mono/mono.git
+
       - name: Build native Mono
         run: |
           cd mono
