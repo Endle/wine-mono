@@ -184,6 +184,8 @@ jobs:
     - name: Build native Mono
       shell: bash
       run: |
+        ls
+        ls mono
         cd mono
         #sed -i 's/\r$//' file
         export PREFIX=$(pwd)/build_mono
