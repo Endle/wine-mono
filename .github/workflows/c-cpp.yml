@@ -100,7 +100,6 @@ jobs:
           echo END 32-BIT $testname TEST 1>&2
         done
 
-
   mac-test:
     runs-on: macos-latest
     needs: build
@@ -141,7 +140,7 @@ jobs:
         for test in `ls tests-x86`
         do
           name=$(basename $test .exe)
-          time wine run-tests.exe -run:$name
+          time wine64 run-tests.exe -run:$name
         done
     - name: mac test output capture
       uses: actions/upload-artifact@v2
