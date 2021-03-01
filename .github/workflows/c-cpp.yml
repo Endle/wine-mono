@@ -180,7 +180,7 @@ jobs:
       shell: bash
       run: |
         rm -rf mono
-        git clone https://github.com/mono/mono.git --depth=1 --recursive
+        git clone --depth=1 --recursive https://github.com/mono/mono.git
     - name: Build native Mono
       shell: bash
       run: |
