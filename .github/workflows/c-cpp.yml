@@ -166,7 +166,22 @@ jobs:
       shell: bash
       run: make check -j$(nproc)
 
+  win-bash:
 
+    runs-on: windows-2019
+    steps:
+    - name: Set up Cygwin
+      uses: egor-tensin/setup-cygwin@v3
+      with:
+        platform: x64
+        packages: unzip
+    - name: Bash env
+      shell: bash
+      run: |
+        uname -a
+        ls
+        ls mono
+        
   win-test-upsteream-mono:
 
     runs-on: windows-2019
@@ -181,10 +196,10 @@ jobs:
       run: |
         rm -rf mono
         git clone --depth=1 --recursive https://github.com/mono/mono.git
-        ls
     - name: Build native Mono
       shell: bash
       run: |
+        uname -a
         ls
         ls mono
         cd mono
