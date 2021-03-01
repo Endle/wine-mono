@@ -22,7 +22,7 @@ jobs:
         run: |
           ls
           pwd
-          
+          ls -a
           
       - name: Download upstream mono
         run: git clone --depth=1 --recursive https://github.com/mono/mono.git
