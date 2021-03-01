@@ -171,28 +171,21 @@ jobs:
 
     runs-on: windows-2019
     steps:
-    - name: Download upstream mono
-      shell: bash
-      run: |
-        rm -rf mono
-        git clone https://github.com/mono/mono.git --depth=1 --recursive
     - name: Set up Cygwin
       uses: egor-tensin/setup-cygwin@v3
       with:
         platform: x64
         packages: autoconf automake bison gcc-core gcc-g++ mingw64-i686-runtime mingw64-i686-binutils mingw64-i686-gcc-core mingw64-i686-gcc-g++ mingw64-i686-pthreads mingw64-i686-w32api mingw64-x86_64-runtime mingw64-x86_64-binutils mingw64-x86_64-gcc-core mingw64-x86_64-gcc-g++ mingw64-x86_64-pthreads mingw64-x86_64-w32api libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt bc patch cmake perl yasm unzip
-    - name: Set git crlf
+    - name: Download upstream mono
+      shell: bash
       run: |
-        touch ~/.gitconfig && chmod a+rwx ~/.gitconfig
-        git config --global core.autocrlf input
-      shell: bash
-    - run: git config --global core.autocrlf input
-      shell: bash
+        rm -rf mono
+        git clone https://github.com/mono/mono.git --depth=1 --recursive
     - name: Build native Mono
       shell: bash
       run: |
         cd mono
-        git config core.autocrlf input
+        #sed -i 's/\r$//' file
         export PREFIX=$(pwd)/build_mono
         ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --disable-boehm
         make -j$(nproc)
