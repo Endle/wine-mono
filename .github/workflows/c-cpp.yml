@@ -11,20 +11,21 @@ jobs:
 
   win-build-upstream-mono:
     runs-on: windows-2019
-    defaults:
-      run:
-        shell: msys2 {0}
     steps:
       - uses: actions/checkout@v2
-      - uses: msys2/setup-msys2@v2
+      - name: Set up Cygwin
+        uses: egor-tensin/setup-cygwin@v3
         with:
-          msystem: MINGW64
-          update: true
-          install: autoconf automake bison libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt 
+          platform: x64
+          packages: autoconf automake bison libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt 
             bc patch cmake perl yasm unzip
             mingw-w64-i686-binutils mingw-w64-i686-gcc mingw-w64-x86_64-binutils mingw-w64-x86_64-gcc mingw-w64-cross-gcc
       - name: Download upstream mono
         run: git clone --depth=1 --recursive https://github.com/mono/mono.git
+      - name: check env
+        run: |
+          ls
+          pwd
       - name: Build native Mono
         run: |
           cd mono
@@ -35,163 +36,7 @@ jobs:
           make install
       - name: Mono test
         run: cd mono && make check -j$(nproc)
-        
-  win-build-forked-mono:
-    runs-on: windows-2019
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          update: true
-          install: autoconf automake bison libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt 
-            bc patch cmake perl yasm unzip
-            mingw-w64-i686-binutils mingw-w64-i686-gcc mingw-w64-x86_64-binutils mingw-w64-x86_64-gcc mingw-w64-cross-gcc mingw-w64-x86_64-mono
-      - name: Init Wine-mino submodules
-        run: cd mono && git submodule update --init --recursive
-      - name: Build native Mono
-        run: |
-          cd mono
-          export PREFIX=$(pwd)/build_mono
-          ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --disable-boehm --enable-static --enable-shared
-          make -j$(nproc)
-          make install
-      - name: Mono test
-        run: cd mono && make check -j$(nproc)
-
-      
-  build:
-
-    runs-on: ubuntu-20.04
-
-    steps:
-    - name: fail
-      run: exit 1
-    - uses: actions/checkout@v2
-      with:
-          submodules: recursive
-
-    - name: Remove packages require EULA
-      run: sudo apt remove msodbcsql17 linux-azure linux-cloud-tools-azure linux-headers-azure linux-image-azure linux-tools-azure -y 1>&2
-    - name: Install Wine
-      run: |
-        sudo apt-get update 1>&2
-        sudo apt install --install-recommends wine64 wine64-tools -y 1>&2
-    - name: Install Mono Build Dependencies
-      run: |
-        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF 1>&2
-        echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-        sudo apt update 1>&2
-        sudo apt-get install mono-devel mono-complete libtool-bin gettext cmake dos2unix libgdiplus zip g++ -y 1>&2
-        # Seems that Github Action Image already includes mono-devel. Still install it explicitly
-    - name: Check Environment
-      run: |
-        gcc --version 1>&2
-        g++ --version 1>&2
-        wine --version 1>&2
-        mono --version 1>&2
-        ld --version 1>&2
-        cmake --version 1>&2
-        man libtool | tail -1 1>&2
-    - name: make
-      run: (make -j$(nproc) &> build-output.log && touch build-succeeded) || true
-    - name: make logging capture
-      uses: actions/upload-artifact@v2
-      with:
-        name: make log
-        path: build-output.log
-    - name: check build result
-      run: test -f build-succeeded
-    - name: msi capture
-      uses: actions/upload-artifact@v2
-      with:
-        name: make msi output
-        path: wine-mono-*.msi
-    - name: bin capture
-      uses: actions/upload-artifact@v2
-      with:
-        name: make bin output
-        path: wine-mono-*.tar.xz
-    - name: bin capture
-      uses: actions/upload-artifact@v2
-      with:
-        name: make tests-zip output
-        path: wine-mono-*-tests.zip
-
-  linux-test:
-
-    runs-on: ubuntu-20.04
-    needs: build
-
-    steps:
-    - name: Remove packages require EULA
-      run: sudo apt remove msodbcsql17 linux-azure linux-cloud-tools-azure linux-headers-azure linux-image-azure linux-tools-azure -y 1>&2
-    - name: Install Wine
-      run: |
-        sudo dpkg --add-architecture i386 1>&2
-        wget -nc https://dl.winehq.org/wine-builds/winehq.key 1>&2
-        sudo apt-key add winehq.key 1>&2
-        sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' 1>&2
-        sudo apt update 1>&2
-        sudo apt install --install-recommends -y winehq-devel 1>&2
-    - name: Download Wine Mono msi
-      uses: actions/download-artifact@v2
-      with:
-        name: make msi output
-    - name: Install Wine Mono msi
-      run: wine msiexec /i wine-mono-*.msi 1>&2
-    - name: Run 64-bit Wine mscoree tests
-      run: |
-        wget -nc 'http://test.winehq.org/builds/winetest64-latest.exe' 1>&2
-        wine winetest64-latest.exe -x winetest64 >/dev/null
-        for testname in `wine winetest64/mscoree_test.exe --list 2>/dev/null|sed 's/\r//'|tail -n +2`; do
-          echo BEGIN $testname TEST >>winetest64-output.log
-          wine64 winetest64/mscoree_test.exe $testname >>winetest64-output.log 2>&1 || printf '::warning mscoree:%s test failed\n' $testname
-          echo END $testname TEST >>winetest64-output.log
-        done
-    - name: Run 32-bit Wine mscoree tests
-      run: |
-        wget -nc 'http://test.winehq.org/builds/winetest-latest.exe' 1>&2
-        wine winetest-latest.exe -x winetest >/dev/null
-        for testname in `wine winetest/mscoree_test.exe --list 2>/dev/null|sed 's/\r//'|tail -n +2`; do
-          echo BEGIN $testname TEST >>winetest-output.log
-          wine winetest/mscoree_test.exe $testname >>winetest-output.log 2>&1 || printf '::warning mscoree:%s test failed\n' $testname
-          echo END $testname TEST >>winetest-output.log
-        done
-    - name: linux test output capture
-      uses: actions/upload-artifact@v2
-      with:
-        name: linux test output
-        path: ./*.log
-
-  mac-test:
-    runs-on: macos-latest
-    needs: build
-
-    steps:
-    - name: Install Wine
-      run: |
-        brew install --cask xquartz
-        brew tap homebrew/cask-versions
-        brew install --cask --no-quarantine wine-devel
-    - name: Download Wine Mono msi
-      uses: actions/download-artifact@v2
-      with:
-        name: make msi output
-    - name: Install Wine Mono msi
-      run: wine64 msiexec /i wine-mono-*.msi 1>&2
-    - name: Run 64-bit Wine mscoree tests
-      run: |
-        wget -nc 'http://test.winehq.org/builds/winetest64-latest.exe' 1>&2
-        wine64 winetest64-latest.exe -x winetest64 >/dev/null
-        for testname in `wine winetest64/mscoree_test.exe --list 2>/dev/null|sed 's/\r//'|tail -n +2`; do
-          echo BEGIN $testname TEST >>winetest64-output.log
-          wine64 winetest64/mscoree_test.exe $testname >>winetest64-output.log 2>&1 || printf '::warning mscoree:%s test failed\n' $testname
-          echo END $testname TEST >>winetest64-output.log
-        done
+   
 
 
 
