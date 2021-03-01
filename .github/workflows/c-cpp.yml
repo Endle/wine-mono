@@ -8,6 +8,82 @@ on:
   workflow_dispatch:
 
 jobs:
+  win-bash:
+
+    runs-on: windows-2019
+    steps:
+    - name: Set up Cygwin
+      uses: egor-tensin/setup-cygwin@v3
+      with:
+        platform: x64
+        packages: unzip
+    - name: Bash env
+      shell: bash
+      run: |
+        uname --help
+        uname -a
+        ls
+        ls mono
+
+  win-test:
+
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+      with:
+          submodules: recursive
+    - run: git config --global core.autocrlf input
+    - name: Set up Cygwin
+      uses: egor-tensin/setup-cygwin@v3
+      with:
+        platform: x64
+        packages: autoconf automake bison gcc-core gcc-g++ mingw64-i686-runtime mingw64-i686-binutils mingw64-i686-gcc-core mingw64-i686-gcc-g++ mingw64-i686-pthreads mingw64-i686-w32api mingw64-x86_64-runtime mingw64-x86_64-binutils mingw64-x86_64-gcc-core mingw64-x86_64-gcc-g++ mingw64-x86_64-pthreads mingw64-x86_64-w32api libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt bc patch cmake perl yasm unzip
+    - run: git config --global core.autocrlf input
+      shell: bash
+    - name: Build native Mono
+      shell: bash
+      run: |
+        cd mono
+        git config core.autocrlf input
+        export PREFIX=$(pwd)/build_mono
+        ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --enable-msvc --disable-boehm
+        make -j$(nproc)
+        make install
+    - name: Mono test
+      shell: bash
+      run: make check -j$(nproc)
+
+
+        
+  win-test-upsteream-mono:
+
+    runs-on: windows-2019
+    steps:
+    - name: Set up Cygwin
+      uses: egor-tensin/setup-cygwin@v3
+      with:
+        platform: x64
+        packages: autoconf automake bison gcc-core gcc-g++ mingw64-i686-runtime mingw64-i686-binutils mingw64-i686-gcc-core mingw64-i686-gcc-g++ mingw64-i686-pthreads mingw64-i686-w32api mingw64-x86_64-runtime mingw64-x86_64-binutils mingw64-x86_64-gcc-core mingw64-x86_64-gcc-g++ mingw64-x86_64-pthreads mingw64-x86_64-w32api libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt bc patch cmake perl yasm unzip
+    - name: Download upstream mono
+      shell: bash
+      run: |
+        rm -rf mono
+        git clone --depth=1 --recursive https://github.com/mono/mono.git
+    - name: Build native Mono
+      shell: bash
+      run: |
+        uname -a
+        ls
+        ls mono
+        cd mono
+        #sed -i 's/\r$//' file
+        export PREFIX=$(pwd)/build_mono
+        ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --disable-boehm
+        make -j$(nproc)
+        make install
+    - name: Mono test
+      shell: bash
+      run: cd mono && make check -j$(nproc)
   build:
 
     runs-on: ubuntu-20.04
@@ -138,78 +214,5 @@ jobs:
           echo END $testname TEST >>winetest64-output.log
         done
 
-  win-test:
-
-    runs-on: windows-2019
-    steps:
-    - uses: actions/checkout@v2
-      with:
-          submodules: recursive
-    - run: git config --global core.autocrlf input
-    - name: Set up Cygwin
-      uses: egor-tensin/setup-cygwin@v3
-      with:
-        platform: x64
-        packages: autoconf automake bison gcc-core gcc-g++ mingw64-i686-runtime mingw64-i686-binutils mingw64-i686-gcc-core mingw64-i686-gcc-g++ mingw64-i686-pthreads mingw64-i686-w32api mingw64-x86_64-runtime mingw64-x86_64-binutils mingw64-x86_64-gcc-core mingw64-x86_64-gcc-g++ mingw64-x86_64-pthreads mingw64-x86_64-w32api libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt bc patch cmake perl yasm unzip
-    - run: git config --global core.autocrlf input
-      shell: bash
-    - name: Build native Mono
-      shell: bash
-      run: |
-        cd mono
-        git config core.autocrlf input
-        export PREFIX=$(pwd)/build_mono
-        ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --enable-msvc --disable-boehm
-        make -j$(nproc)
-        make install
-    - name: Mono test
-      shell: bash
-      run: make check -j$(nproc)
-
-  win-bash:
-
-    runs-on: windows-2019
-    steps:
-    - name: Set up Cygwin
-      uses: egor-tensin/setup-cygwin@v3
-      with:
-        platform: x64
-        packages: unzip
-    - name: Bash env
-      shell: bash
-      run: |
-        uname -a
-        ls
-        ls mono
-        
-  win-test-upsteream-mono:
-
-    runs-on: windows-2019
-    steps:
-    - name: Set up Cygwin
-      uses: egor-tensin/setup-cygwin@v3
-      with:
-        platform: x64
-        packages: autoconf automake bison gcc-core gcc-g++ mingw64-i686-runtime mingw64-i686-binutils mingw64-i686-gcc-core mingw64-i686-gcc-g++ mingw64-i686-pthreads mingw64-i686-w32api mingw64-x86_64-runtime mingw64-x86_64-binutils mingw64-x86_64-gcc-core mingw64-x86_64-gcc-g++ mingw64-x86_64-pthreads mingw64-x86_64-w32api libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt bc patch cmake perl yasm unzip
-    - name: Download upstream mono
-      shell: bash
-      run: |
-        rm -rf mono
-        git clone --depth=1 --recursive https://github.com/mono/mono.git
-    - name: Build native Mono
-      shell: bash
-      run: |
-        uname -a
-        ls
-        ls mono
-        cd mono
-        #sed -i 's/\r$//' file
-        export PREFIX=$(pwd)/build_mono
-        ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --disable-boehm
-        make -j$(nproc)
-        make install
-    - name: Mono test
-      shell: bash
-      run: cd mono && make check -j$(nproc)
 
 
