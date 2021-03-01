@@ -7,7 +7,6 @@ on:
     branches: [ develop ]
   workflow_dispatch:
 
-
 jobs:
 
   win-build-upstream-mono:
@@ -31,6 +30,7 @@ jobs:
           cd mono
           export PREFIX=$(pwd)/build_mono
           ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --disable-boehm
+          make get-monolite-latest
           make -j$(nproc)
           make install
       - name: Mono test
@@ -57,6 +57,7 @@ jobs:
           cd mono
           export PREFIX=$(pwd)/build_mono
           ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --disable-boehm
+          make get-monolite-latest
           make -j$(nproc)
           make install
       - name: Mono test
