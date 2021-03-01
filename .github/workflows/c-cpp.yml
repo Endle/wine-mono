@@ -49,15 +49,14 @@ jobs:
           update: true
           install: autoconf automake bison libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt 
             bc patch cmake perl yasm unzip
-            mingw-w64-i686-binutils mingw-w64-i686-gcc mingw-w64-x86_64-binutils mingw-w64-x86_64-gcc mingw-w64-cross-gcc
+            mingw-w64-i686-binutils mingw-w64-i686-gcc mingw-w64-x86_64-binutils mingw-w64-x86_64-gcc mingw-w64-cross-gcc mingw-w64-x86_64-mono
       - name: Init Wine-mino submodules
         run: cd mono && git submodule update --init --recursive
       - name: Build native Mono
         run: |
           cd mono
           export PREFIX=$(pwd)/build_mono
-          ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --disable-boehm
-          make get-monolite-latest
+          ./autogen.sh --prefix=$PREFIX --host=x86_64-w64-mingw32 --disable-boehm --enable-static --enable-shared
           make -j$(nproc)
           make install
       - name: Mono test
