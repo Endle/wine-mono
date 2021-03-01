@@ -23,8 +23,7 @@ jobs:
           update: true
           install: autoconf automake bison libtool make python gettext-devel gettext intltool libiconv pkg-config git curl wget libxslt 
             bc patch cmake perl yasm unzip
-            mingw-w64-i686-runtime mingw-w64-i686-binutils mingw-w64-i686-gcc-core mingw-w64-i686-gcc-g++ 
-            mingw-w64-i686-pthreads mingw-w64-i686-w32api mingw-w64-x86_64-runtime mingw-w64-x86_64-binutils mingw-w64-x86_64-gcc-core mingw-w64-x86_64-gcc-g++ mingw-w64-x86_64-pthreads mingw-w64-x86_64-w32api
+            mingw-w64-i686-binutils mingw-w64-i686-gcc mingw-w64-x86_64-binutils mingw-w64-x86_64-gcc mingw-w64-cross-gcc
       - name: Download upstream mono
         run: git clone --depth=1 --recursive https://github.com/mono/mono.git
       - name: Build native Mono
