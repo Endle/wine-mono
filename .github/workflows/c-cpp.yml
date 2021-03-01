@@ -2,7 +2,7 @@ name: Wine-Mono CI
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop,cygwin ]
   pull_request:
     branches: [ develop ]
   workflow_dispatch:
