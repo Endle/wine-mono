@@ -20,6 +20,7 @@ jobs:
           platform: x64
           packages: git unzip
       - name: check env
+        shell: bash
         run: |
           ls
           pwd
