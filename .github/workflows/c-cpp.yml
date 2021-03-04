@@ -20,7 +20,7 @@ jobs:
           platform: x64
           packages: git unzip
       - name: check env
-        shell: C:\tools\cygwin\bin\bash.EXE --noprofile  -e -o pipefail {0}
+        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
         run: |
           ls
           pwd
