@@ -2,7 +2,7 @@ name: Wine-Mono CI
 
 on:
   push:
-    branches: [ develop,cygwin ]
+    branches: [ develop ]
   pull_request:
     branches: [ develop ]
   workflow_dispatch:
@@ -12,6 +12,9 @@ jobs:
 
   win-build-upstream-mono:
     runs-on: windows-2019
+    defaults:
+      run: 
+        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
     steps:
       - uses: actions/checkout@v2
       - name: Set up Cygwin
@@ -20,7 +23,6 @@ jobs:
           platform: x64
           packages: git unzip
       - name: check env
-        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
         run: |
           ls
           pwd
