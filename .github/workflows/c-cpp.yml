@@ -28,7 +28,7 @@ jobs:
         env:
           cache-name: cache-cygwin-packages
         with:
-          path: C:\\tools\\cygwin\\packages
+          path: /cygdrive/c/tools/cygwin/packages
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ steps.get-date.outputs.date }}-${{ steps.get-date.outputs.time }}
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}-${{ steps.get-date.outputs.date }}-
@@ -41,7 +41,7 @@ jobs:
           packages: git unzip
 
       - name: Download upstream mono
-        run: echo 1 # git clone --depth=1 --recursive https://github.com/mono/mono.git
+        run: ls /cygdrive/c/tools/cygwin/packages # git clone --depth=1 --recursive https://github.com/mono/mono.git
 
       - name: Build native Mono
         run: |
