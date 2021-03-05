@@ -28,10 +28,10 @@ jobs:
           pwd
           ls -a
       - name: check packages
-        shell: cmd
         run: |
-          cd C:\tools\cygwin\packages
-          dir
+          cd C:\\tools\\cygwin\\packages
+          ls
+          ls cd C:\\tools\\cygwin\\packages
       - name: Download upstream mono
         run: git clone --depth=1 --recursive https://github.com/mono/mono.git
 
