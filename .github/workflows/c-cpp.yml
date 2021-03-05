@@ -17,6 +17,23 @@ jobs:
         shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
     steps:
       - uses: actions/checkout@v2
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+          echo "::set-output name=time::$(/bin/date -u "+%H%M%S")"
+        shell: bash
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-cygwin-packages
+        with:
+          path: C:\\tools\\cygwin\\packages
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ steps.get-date.outputs.date }}-${{ steps.get-date.outputs.time }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.cache-name }}-${{ steps.get-date.outputs.date }}-${{ steps.get-date.outputs.time }}
+            ${{ runner.os }}-${{ env.cache-name }}-${{ steps.get-date.outputs.date }}-
+            ${{ runner.os }}-${{ env.cache-name }}-
       - name: Set up Cygwin
         uses: egor-tensin/setup-cygwin@v3
         with:
