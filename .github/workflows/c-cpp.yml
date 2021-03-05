@@ -39,18 +39,9 @@ jobs:
         with:
           platform: x64
           packages: git unzip
-      - name: check env
-        run: |
-          ls
-          pwd
-          ls -a
-      - name: check packages
-        run: |
-          cd C:\\tools\\cygwin\\packages
-          ls
-          ls cd C:\\tools\\cygwin\\packages
+
       - name: Download upstream mono
-        run: git clone --depth=1 --recursive https://github.com/mono/mono.git
+        run: exit 1 && git clone --depth=1 --recursive https://github.com/mono/mono.git
 
       - name: Build native Mono
         run: |
